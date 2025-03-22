@@ -2,27 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan EMI Calculator</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
         <h2>Loan EMI Calculator</h2>
-        <label for="principal">Principal Amount:</label>
-        <input type="number" id="principal" placeholder="Enter Principal Amount">
-        
-        <label for="rate">Annual Interest Rate (%):</label>
-        <input type="number" id="rate" placeholder="Enter Interest Rate">
-        
-        <label for="years">Loan Tenure (Years):</label>
-        <input type="number" id="years" placeholder="Enter Tenure">
-        
+        <label>Principal Amount:</label>
+        <input type="number" id="principal" placeholder="Enter principal amount">
+        <label>Annual Interest Rate (%):</label>
+        <input type="number" id="rate" placeholder="Enter interest rate">
+        <label>Loan Tenure (Years):</label>
+        <input type="number" id="tenure" placeholder="Enter loan tenure">
         <button onclick="calculateEMI()">Calculate EMI</button>
         <p id="result"></p>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function calculateEMI() {
+            const principal = document.getElementById("principal").value;
+            const rate = document.getElementById("rate").value;
+            const tenure = document.getElementById("tenure").value;
+
+            fetch('/calculate_emi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ principal, rate, tenure })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.emi) {
+                    document.getElementById("result").innerText = `EMI: ₹ ${data.emi}`;
+                } else {
+                    document.getElementById("result").innerText = `Error: ${data.error}`;
+                }
+            });
+        }
+    </script>
 </body>
 </html>
