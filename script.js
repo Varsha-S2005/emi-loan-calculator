@@ -1,4 +1,6 @@
-function calculateEMI() {
+const apiUrl = "https://emi-loan-backend.onrender.com";  // Backend API URL
+
+async function calculateEMI() {
     const principal = parseFloat(document.getElementById("principal").value);
     const rate = parseFloat(document.getElementById("rate").value) / 12 / 100;
     const time = parseFloat(document.getElementById("time").value) * 12;
@@ -8,6 +10,27 @@ function calculateEMI() {
         return;
     }
 
-    const emi = (principal * rate * Math.pow(1 + rate, time)) / (Math.pow(1 + rate, time) - 1);
-    document.getElementById("result").innerHTML = `Monthly EMI: ₹${emi.toFixed(2)}`;
+    try {
+        const response = await fetch(`${apiUrl}/calculate`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ principal, rate, time }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to calculate EMI");
+        }
+
+        const data = await response.json();
+        document.getElementById("result").innerHTML = `
+            <p>Monthly EMI: ₹${data.emi.toFixed(2)}</p>
+            <p>Total Interest: ₹${data.totalInterest.toFixed(2)}</p>
+            <p>Total Payment: ₹${data.totalPayment.toFixed(2)}</p>
+        `;
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("result").innerHTML = "Error calculating EMI. Please try again.";
+    }
 }
