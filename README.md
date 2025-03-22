@@ -31,3 +31,16 @@ The backend is deployed at:
 - **Monthly EMI:** ₹1,015.39
 
 ## Project Structure
+loan-emi-calculator/
+├── app.py             # Main Flask application file
+├── requirements.txt   # Dependencies file
+├── README.md          # Project documentation
+├── templates/         # HTML templates
+│   └── index.html      # Main webpage
+├── static/            # Static files (CSS, JS)
+│   ├── css/
+│   │   └── style.css   # Styling file
+│   └── js/
+│       └── script.js   # EMI calculation script
+└── .gitignore          # Ignore unnecessary files
+
