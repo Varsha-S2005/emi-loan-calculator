@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Loan EMI Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Loan Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Loan EMI Calculator</h2>
-        <label>Principal Amount:</label>
-        <input type="number" id="principal" placeholder="Enter principal amount" required>
+        <h2>EMI Loan Calculator</h2>
+        <label for="principal">Principal Amount (₹):</label>
+        <input type="number" id="principal" placeholder="Enter Principal Amount">
         
-        <label>Annual Interest Rate (%):</label>
-        <input type="number" id="rate" step="0.01" placeholder="Enter interest rate" required>
+        <label for="rate">Annual Interest Rate (%):</label>
+        <input type="number" id="rate" placeholder="Enter Interest Rate">
         
-        <label>Loan Tenure (Months):</label>
-        <input type="number" id="tenure" placeholder="Enter tenure in months" required>
+        <label for="time">Loan Tenure (Years):</label>
+        <input type="number" id="time" placeholder="Enter Loan Tenure">
         
         <button onclick="calculateEMI()">Calculate EMI</button>
         
