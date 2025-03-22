@@ -1,36 +1,34 @@
-const apiUrl = "https://emi-loan-backend.onrender.com";  // Backend API URL
-
-async function calculateEMI() {
+function calculateEMI() {
     const principal = parseFloat(document.getElementById("principal").value);
-    const rate = parseFloat(document.getElementById("rate").value) / 12 / 100;
-    const time = parseFloat(document.getElementById("time").value) * 12;
+    const rate = parseFloat(document.getElementById("rate").value);
+    const time = parseFloat(document.getElementById("time").value);
 
     if (isNaN(principal) || isNaN(rate) || isNaN(time) || principal <= 0 || rate <= 0 || time <= 0) {
         document.getElementById("result").innerHTML = "Please enter valid positive numbers.";
         return;
     }
 
-    try {
-        const response = await fetch(`${apiUrl}/calculate`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ principal, rate, time }),
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to calculate EMI");
+    fetch("https://emi-loan-calculator-backend.onrender.com/calculate_emi", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            principal: principal,
+            rate: rate,
+            time: time
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            document.getElementById("result").innerHTML = "Error calculating EMI. Please try again.";
+        } else {
+            document.getElementById("result").innerHTML = `Monthly EMI: ₹${data.emi}`;
         }
-
-        const data = await response.json();
-        document.getElementById("result").innerHTML = `
-            <p>Monthly EMI: ₹${data.emi.toFixed(2)}</p>
-            <p>Total Interest: ₹${data.totalInterest.toFixed(2)}</p>
-            <p>Total Payment: ₹${data.totalPayment.toFixed(2)}</p>
-        `;
-    } catch (error) {
+    })
+    .catch(error => {
+        document.getElementById("result").innerHTML = "Error connecting to the server. Please try again later.";
         console.error("Error:", error);
-        document.getElementById("result").innerHTML = "Error calculating EMI. Please try again.";
-    }
+    });
 }
