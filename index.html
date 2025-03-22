@@ -1,57 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan EMI Calculator</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
+    <script>
+        async function calculateEMI() {
+            const principal = document.getElementById("principal").value;
+            const rate = document.getElementById("rate").value;
+            const time = document.getElementById("time").value;
+
+            const data = { principal: principal, rate: rate, time: time };
+            try {
+                const response = await fetch('/calculate_emi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    document.getElementById("emi").innerText = "EMI: " + result.emi;
+                    const schedule = result.schedule;
+                    const table = document.getElementById("schedule");
+                    table.innerHTML = `
+                        <tr>
+                            <th>Month</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>EMI</th>
+                            <th>Balance</th>
+                        </tr>`;
+                    
+                    schedule.forEach(item => {
+                        const row = table.insertRow();
+                        row.insertCell().innerText = item.month;
+                        row.insertCell().innerText = item.principal_payment;
+                        row.insertCell().innerText = item.interest_payment;
+                        row.insertCell().innerText = item.emi;
+                        row.insertCell().innerText = item.balance;
+                    });
+                } else {
+                    document.getElementById("emi").innerText = "Error calculating EMI: " + result.error;
+                }
+            } catch (error) {
+                document.getElementById("emi").innerText = "Error: " + error.message;
+            }
         }
-        input {
-            margin: 5px;
-            padding: 5px;
-        }
-        #result, #amortization-table {
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            margin: 0 auto;
-            padding: 8px;
-        }
-        canvas {
-            margin-top: 20px;
-        }
-    </style>
+    </script>
 </head>
 <body>
-    <h2>Loan EMI Calculator</h2>
-    <input type="number" id="principal" placeholder="Loan Amount (₹)">
-    <input type="number" id="rate" placeholder="Annual Interest Rate (%)">
-    <input type="number" id="time" placeholder="Loan Tenure (Years)">
+    <h1>Loan EMI Calculator</h1>
+    <input type="number" id="principal" placeholder="Principal" step="0.01">
+    <input type="number" id="rate" placeholder="Rate (%)" step="0.01">
+    <input type="number" id="time" placeholder="Time (years)" step="0.01">
     <button onclick="calculateEMI()">Calculate EMI</button>
-    <div id="result"></div>
-    <div>
-        <h3>Amortization Schedule</h3>
-        <table id="amortization-table">
-            <thead>
-                <tr>
-                    <th>Month</th>
-                    <th>Principal</th>
-                    <th>Interest</th>
-                    <th>EMI</th>
-                    <th>Balance</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <canvas id="emiChart" width="400" height="200"></canvas>
-    <script src="script.js"></script>
+    <p id="emi"></p>
+    <table id="schedule" border="1"></table>
 </body>
 </html>
