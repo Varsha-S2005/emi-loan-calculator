@@ -2,28 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan EMI Calculator</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <h2>Loan EMI Calculator</h2>
-    <div>
+    <div class="container">
+        <h1>Loan EMI Calculator</h1>
         <label>Principal Amount:</label>
         <input type="number" id="principal" placeholder="Enter principal amount">
-    </div>
-    <div>
         <label>Annual Interest Rate (%):</label>
         <input type="number" id="rate" placeholder="Enter interest rate">
-    </div>
-    <div>
         <label>Loan Tenure (Years):</label>
         <input type="number" id="time" placeholder="Enter loan tenure">
+        <button onclick="calculateEMI()">Calculate EMI</button>
+        <p id="result"></p>
     </div>
-    <button onclick="calculateEMI()">Calculate EMI</button>
-    <div id="result"></div>
-
-    <script src="script.js"></script>
 </body>
 </html>
