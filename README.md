@@ -28,7 +28,7 @@ The backend is deployed at:
 - **Principal Amount (₹):** 10,000  
 - **Annual Interest Rate (%):** 20  
 - **Loan Tenure (Years):** 2  
-- **Monthly EMI:** ₹1,015.39
+- **Monthly EMI:** ₹508.96
 
 ## Project Structure
 loan-emi-calculator/
