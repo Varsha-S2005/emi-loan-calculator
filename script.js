@@ -9,31 +9,40 @@ async function calculateEMI() {
     }
 
     try {
-        const response = await fetch("https://emi-loan-calculator-backend.onrender.com/calculate", {
+        console.log("Sending request to backend...");
+        const response = await fetch("http://127.0.0.1:5000/calculate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ principal, rate, time })
         });
-        
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch data from the server.");
+        }
+
         const data = await response.json();
-        
+        console.log("Received data:", data);
+
+        // Display the EMI result
         document.getElementById("result").innerHTML = `Monthly EMI: ₹${data.emi.toFixed(2)}`;
 
+        // Update the Amortization Schedule
         const amortizationTable = document.querySelector("#amortization-table tbody");
         amortizationTable.innerHTML = "";
         data.schedule.forEach((entry, index) => {
             const row = `<tr>
                 <td>${index + 1}</td>
-                <td>₹${entry.principal.toFixed(2)}</td>
-                <td>₹${entry.interest.toFixed(2)}</td>
                 <td>₹${data.emi.toFixed(2)}</td>
+                <td>₹${entry.interest.toFixed(2)}</td>
+                <td>₹${entry.principal.toFixed(2)}</td>
                 <td>₹${entry.balance.toFixed(2)}</td>
             </tr>`;
             amortizationTable.innerHTML += row;
         });
 
+        // Display the Pie Chart for EMI breakdown
         const chartContext = document.getElementById("emiChart").getContext("2d");
         new Chart(chartContext, {
             type: "pie",
