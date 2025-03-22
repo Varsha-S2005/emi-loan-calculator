@@ -8,7 +8,7 @@ function calculateEMI() {
         return;
     }
 
-    fetch("https://emi-loan-calculator-backend.onrender.com/calculate", {
+    fetch("https://emi-loan-backend.onrender.com/calculate_emi", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -18,13 +18,13 @@ function calculateEMI() {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            document.getElementById("result").innerHTML = "Error: " + data.error;
+            document.getElementById("result").innerHTML = "Error calculating EMI. Please try again.";
         } else {
             document.getElementById("result").innerHTML = `Monthly EMI: ₹${data.emi.toFixed(2)}`;
         }
     })
     .catch(error => {
-        document.getElementById("result").innerHTML = "Error calculating EMI.";
+        document.getElementById("result").innerHTML = "Network error. Please try again.";
         console.error("Error:", error);
     });
 }
