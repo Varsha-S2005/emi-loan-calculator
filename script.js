@@ -1,20 +1,23 @@
 function calculateEMI() {
-    const principal = parseFloat(document.getElementById("principal").value);
-    const rate = parseFloat(document.getElementById("rate").value);
-    const years = parseFloat(document.getElementById("years").value);
+    const principal = document.getElementById("principal").value;
+    const rate = document.getElementById("rate").value;
+    const tenure = document.getElementById("tenure").value;
 
-    if (isNaN(principal) || isNaN(rate) || isNaN(years) || principal <= 0 || rate <= 0 || years <= 0) {
-        document.getElementById("result").innerText = "Please enter valid positive numbers.";
-        return;
-    }
-
-    const monthlyRate = rate / (12 * 100);
-    const months = years * 12;
-    const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-
-    if (isFinite(emi)) {
-        document.getElementById("result").innerText = `Monthly EMI: ₹${emi.toFixed(2)}`;
-    } else {
-        document.getElementById("result").innerText = "Error calculating EMI.";
-    }
+    fetch('/calculate_emi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ principal, rate, tenure })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.emi) {
+            document.getElementById("result").innerText = `EMI: ₹ ${data.emi}`;
+        } else {
+            document.getElementById("result").innerText = `Error: ${data.error}`;
+        }
+    })
+    .catch(error => {
+        document.getElementById("result").innerText = `Error: Unable to calculate EMI`;
+        console.error("Error:", error);
+    });
 }
