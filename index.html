@@ -67,20 +67,25 @@
         function calculateEMI() {
             const principal = document.getElementById("principal").value;
             const rate = document.getElementById("rate").value;
-            const tenure = document.getElementById("tenure").value;
+            const time = document.getElementById("tenure").value;
 
-            fetch('/calculate_emi', {
+            fetch('https://emi-loan-calculator-backend-5.onrender.com/calculate_emi', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ principal, rate, tenure })
+                body: JSON.stringify({ principal, rate, time })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.emi) {
                     document.getElementById("result").innerText = `EMI: ₹ ${data.emi}`;
-                } else {
+                } else if (data.error) {
                     document.getElementById("result").innerText = `Error: ${data.error}`;
+                } else {
+                    document.getElementById("result").innerText = "Unexpected error occurred.";
                 }
+            })
+            .catch(error => {
+                document.getElementById("result").innerText = `Error: ${error.message}`;
             });
         }
     </script>
