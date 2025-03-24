@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <title>Loan EMI Calculator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your custom CSS file -->
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
@@ -35,6 +36,15 @@
             width: 100%;
             padding: 10px;
             margin-top: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
         }
 
         p {
@@ -66,9 +76,14 @@
 
     <script>
         function calculateEMI() {
-            const principal = document.getElementById("principal").value;
-            const rate = document.getElementById("rate").value;
-            const time = document.getElementById("tenure").value;
+            const principal = parseFloat(document.getElementById("principal").value);
+            const rate = parseFloat(document.getElementById("rate").value);
+            const time = parseInt(document.getElementById("tenure").value);
+
+            if (isNaN(principal) || isNaN(rate) || isNaN(time)) {
+                document.getElementById("result").innerText = "Please enter valid numbers for all fields.";
+                return;
+            }
 
             fetch('https://emi-loan-calculator-backend-5.onrender.com/calculate_emi', {
                 method: 'POST',
@@ -86,11 +101,10 @@
                 }
             })
             .catch(error => {
-                document.getElementById("result").innerText = `Error: ${error.message}`;
+                document.getElementById("result").innerText = `Error: Unable to calculate EMI. Please try again later.`;
+                console.error("Error:", error);
             });
         }
     </script>
 </body>
 </html>
-
-
